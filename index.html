@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="BharatJobs Pro - India's multilingual job portal for jobs, work from home and employers.">
+<title>BharatJobs Pro — India's Multilingual Job Portal</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script>
+tailwind.config={theme:{extend:{
+ colors:{navy:{900:'#0b1220',950:'#050914'},brand:{500:'#2563eb',600:'#1d4ed8',700:'#1e40af'},saffron:'#ff8a00'},
+ fontFamily:{sans:['Inter','Noto Sans Devanagari','sans-serif']}
+}}}
+</script>
+<style>
+body{font-family:Inter,"Noto Sans Devanagari",sans-serif}
+.bg-hero{background:radial-gradient(circle at 15% 20%,rgba(37,99,235,.25),transparent 32%),radial-gradient(circle at 85% 80%,rgba(255,138,0,.16),transparent 30%),linear-gradient(135deg,#07111f,#101c3c 55%,#07111f)}
+.modal-backdrop{background:rgba(2,6,23,.78);backdrop-filter:blur(6px)}
+.card{transition:.2s}.card:hover{transform:translateY(-3px)}
+.lang-menu{max-height:360px;overflow:auto}
+</style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen">
+
+<header class="sticky top-0 z-40 bg-navy-900/95 backdrop-blur border-b border-slate-800 text-white">
+ <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 min-h-[72px] flex items-center justify-between gap-4">
+  <a href="#" onclick="resetFilters()" class="flex items-center gap-3 shrink-0">
+   <div class="w-10 h-10 rounded-xl bg-brand-600 flex items-center justify-center shadow-lg"><i class="fa-solid fa-briefcase"></i></div>
+   <div><div class="font-extrabold text-lg sm:text-xl">BharatJobs<span class="text-blue-400">Pro</span></div><div class="text-[10px] text-slate-400">India • Jobs • Skills • Careers</div></div>
+  </a>
+  <nav class="hidden lg:flex items-center gap-7 text-sm text-slate-300">
+   <a href="#jobs" class="hover:text-white" data-i18n="browse">Browse Jobs</a>
+   <a href="#states" class="hover:text-white" data-i18n="states">States & Cities</a>
+   <a href="#training" class="hover:text-amber-300" data-i18n="training">Training</a>
+   <a href="#employer" onclick="openModal('postJobModal')" class="hover:text-white" data-i18n="employers">For Employers</a>
+  </nav>
+  <div class="flex items-center gap-2">
+   <div class="relative">
+    <button onclick="toggleLang()" class="px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-xs font-semibold flex items-center gap-2"><i class="fa-solid fa-language"></i><span id="currentLang">English</span><i class="fa-solid fa-chevron-down text-[9px]"></i></button>
+    <div id="langMenu" class="hidden absolute right-0 mt-2 w-64 bg-white text-slate-800 rounded-xl shadow-2xl border border-slate-200 p-2 lang-menu">
+     <div class="text-[10px] uppercase font-bold text-slate-400 px-3 py-2">22 Scheduled Indian Languages</div>
+     <div id="languageList" class="grid grid-cols-1"></div>
+    </div>
+   </div>
+   <button onclick="openModal('postJobModal')" class="hidden sm:flex px-4 py-2.5 bg-brand-600 hover:bg-brand-700 rounded-lg text-sm font-bold items-center gap-2"><i class="fa-solid fa-plus"></i><span data-i18n="postJob">Post a Job</span></button>
+  </div>
+ </div>
+</header>
+
+<section class="bg-hero text-white py-14 sm:py-20">
+ <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  <div class="max-w-3xl mx-auto text-center">
+   <span class="inline-flex px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-400/20 text-blue-300 text-xs font-bold mb-4"><i class="fa-solid fa-shield-halved mr-2"></i><span data-i18n="verified">Verified-style job listings • Pan India</span></span>
+   <h1 class="text-3xl sm:text-5xl font-extrabold leading-tight" data-i18n="heroTitle">Find Jobs Across India in Your Language</h1>
+   <p class="mt-4 text-slate-300 text-sm sm:text-lg" data-i18n="heroText">Search jobs by role, state, city and work mode. Use BharatJobs Pro in 22 Indian languages.</p>
+  </div>
+
+  <div class="max-w-6xl mx-auto mt-9 bg-slate-950/80 border border-slate-700 rounded-2xl p-4 shadow-2xl">
+   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3">
+    <div class="lg:col-span-2 relative">
+     <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+     <input id="searchInput" class="w-full pl-11 pr-4 py-3.5 rounded-xl bg-slate-900 border border-slate-700 text-white text-sm outline-none focus:border-blue-500" placeholder="Job title, skill or company" data-i18n-placeholder="search">
+    </div>
+    <select id="stateFilter" class="px-4 py-3.5 rounded-xl bg-slate-900 border border-slate-700 text-white text-sm outline-none"></select>
+    <select id="cityFilter" class="px-4 py-3.5 rounded-xl bg-slate-900 border border-slate-700 text-white text-sm outline-none"></select>
+    <select id="categoryFilter" class="px-4 py-3.5 rounded-xl bg-slate-900 border border-slate-700 text-white text-sm outline-none"></select>
+   </div>
+   <div class="mt-4 flex flex-wrap gap-2 items-center text-xs text-slate-400">
+    <span class="font-semibold" data-i18n="popular">Popular:</span>
+    <button class="quick" onclick="quickSearch('Work From Home')">🏠 Work From Home</button>
+    <button class="quick" onclick="quickSearch('Customer Support')">🎧 Customer Support</button>
+    <button class="quick" onclick="quickSearch('Data Entry')">⌨️ Data Entry</button>
+    <button class="quick" onclick="quickSearch('Software')">💻 Software</button>
+    <button class="quick" onclick="quickSearch('Sales')">📈 Sales</button>
+   </div>
+  </div>
+ </div>
+</section>
+
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 relative z-10">
+ <div class="bg-white rounded-2xl border border-slate-200 shadow-xl p-5 grid grid-cols-2 md:grid-cols-4 gap-4">
+  <div><div class="text-2xl font-extrabold text-slate-900">28+</div><div class="text-xs text-slate-500" data-i18n="statesCount">States & UTs</div></div>
+  <div><div class="text-2xl font-extrabold text-slate-900">22</div><div class="text-xs text-slate-500" data-i18n="languages">Indian languages</div></div>
+  <div><div class="text-2xl font-extrabold text-slate-900">24×7</div><div class="text-xs text-slate-500" data-i18n="access">Job search access</div></div>
+  <div><div class="text-2xl font-extrabold text-slate-900">100%</div><div class="text-xs text-slate-500" data-i18n="mobile">Mobile friendly</div></div>
+ </div>
+</section>
+
+<main id="jobs" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+ <div class="flex flex-col sm:flex-row justify-between gap-4 mb-7">
+  <div><h2 class="text-2xl font-extrabold text-slate-900" data-i18n="latest">Latest Jobs</h2><p id="jobCount" class="text-sm text-slate-500 mt-1"></p></div>
+  <button onclick="resetFilters()" class="text-sm text-brand-600 font-bold"><i class="fa-solid fa-rotate mr-1"></i><span data-i18n="reset">Reset filters</span></button>
+ </div>
+ <div id="jobGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+ <div id="empty" class="hidden bg-white border border-slate-200 rounded-2xl p-12 text-center"><i class="fa-solid fa-magnifying-glass text-4xl text-slate-300"></i><h3 class="font-bold text-lg mt-4" data-i18n="noJobs">No matching jobs</h3><p class="text-sm text-slate-500 mt-1" data-i18n="tryAgain">Try another role, state or city.</p></div>
+</main>
+
+<section id="states" class="bg-white border-y border-slate-200 py-12">
+ <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  <div class="text-center mb-7"><h2 class="text-2xl font-extrabold" data-i18n="explore">Explore Jobs by State / UT</h2><p class="text-sm text-slate-500 mt-1" data-i18n="exploreText">Quickly browse opportunities across India.</p></div>
+  <div id="stateChips" class="flex flex-wrap justify-center gap-2"></div>
+ </div>
+</section>
+
+<section id="training" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+ <div class="rounded-2xl bg-gradient-to-r from-amber-400 via-orange-500 to-amber-500 p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+  <div><span class="text-xs font-black bg-slate-950 text-amber-300 px-3 py-1 rounded-full">CAREER SKILLS</span><h2 class="text-2xl font-black text-slate-950 mt-3" data-i18n="skillTitle">Job Ready Skills Program</h2><p class="text-sm text-slate-900/80 mt-1 max-w-2xl" data-i18n="skillText">Learn resume basics, interview preparation, digital workplace tools and job-search skills.</p></div>
+  <button onclick="openModal('trainingModal')" class="shrink-0 px-6 py-3.5 bg-slate-950 text-amber-300 rounded-xl font-extrabold" data-i18n="learn">View Training</button>
+ </div>
+</section>
+
+<footer id="footer" class="bg-navy-950 text-slate-400 py-12">
+ <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  <div class="grid md:grid-cols-4 gap-8">
+   <div><div class="text-xl font-extrabold text-white">BharatJobs<span class="text-blue-400">Pro</span></div><p class="text-xs leading-6 mt-3" data-i18n="footerText">A multilingual job discovery platform for opportunities across India.</p></div>
+   <div><h4 class="text-sm font-bold text-white mb-3" data-i18n="forSeekers">For Job Seekers</h4><ul class="space-y-2 text-xs"><li><a href="#jobs" class="hover:text-white" data-i18n="browse">Browse Jobs</a></li><li><a href="#states" class="hover:text-white" data-i18n="states">States & Cities</a></li><li><a href="#training" class="hover:text-white" data-i18n="training">Training</a></li></ul></div>
+   <div><h4 class="text-sm font-bold text-white mb-3" data-i18n="forEmployers">For Employers</h4><button onclick="openModal('postJobModal')" class="text-xs hover:text-white" data-i18n="postJob">Post a Job</button></div>
+   <div><h4 class="text-sm font-bold text-white mb-3" data-i18n="support">Support</h4><p class="text-xs">support@bharatjobs.example</p><p class="text-xs mt-2">© 2026 BharatJobs Pro</p></div>
+  </div>
+  <div class="border-t border-slate-800 mt-8 pt-5 text-[11px] text-slate-500" data-i18n="disclaimer">Demo portal: job listings and payment screens are sample data. Connect a secure backend and verified payment gateway before production use.</div>
+ </div>
+</footer>
+
+<!-- Apply Modal -->
+<div id="applyModal" class="fixed inset-0 z-50 hidden modal-backdrop p-4 items-center justify-center">
+ <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl">
+  <div class="bg-navy-900 text-white p-6 rounded-t-2xl"><button onclick="closeModal('applyModal')" class="float-right text-slate-400"><i class="fa-solid fa-xmark"></i></button><div class="text-xs text-blue-300 font-bold">JOB APPLICATION</div><h3 id="applyTitle" class="text-xl font-extrabold mt-1"></h3><p id="applyCompany" class="text-xs text-slate-300"></p></div>
+  <form onsubmit="submitApply(event)" class="p-6 space-y-4">
+   <input required class="field" placeholder="Full name">
+   <input required type="email" class="field" placeholder="Email address">
+   <input required type="tel" class="field" placeholder="Phone / WhatsApp">
+   <label class="text-xs font-bold text-slate-600">Resume (PDF/DOC)</label><input required type="file" accept=".pdf,.doc,.docx" class="field">
+   <button class="w-full py-3 rounded-xl bg-brand-600 text-white font-bold">Submit Application</button>
+  </form>
+ </div>
+</div>
+
+<!-- Employer Modal -->
+<div id="postJobModal" class="fixed inset-0 z-50 hidden modal-backdrop p-4 items-center justify-center">
+ <div class="bg-white rounded-2xl max-w-lg w-full shadow-2xl">
+  <div class="bg-navy-900 text-white p-6 rounded-t-2xl"><button onclick="closeModal('postJobModal')" class="float-right text-slate-400"><i class="fa-solid fa-xmark"></i></button><h3 class="text-xl font-extrabold" data-i18n="postTitle">Post a Job</h3><p class="text-xs text-slate-300" data-i18n="postText">Publish a vacancy for candidates across India.</p></div>
+  <form onsubmit="submitJob(event)" class="p-6 space-y-4">
+   <input id="newTitle" required class="field" placeholder="Job title">
+   <input id="newCompany" required class="field" placeholder="Company name">
+   <div class="grid grid-cols-2 gap-3"><select id="newState" class="field"></select><input id="newCity" class="field" placeholder="City"></div>
+   <select id="newCategory" class="field"></select><input id="newSalary" class="field" placeholder="Salary range">
+   <button class="w-full py-3 rounded-xl bg-brand-600 text-white font-bold" data-i18n="publish">Publish Job</button>
+  </form>
+ </div>
+</div>
+
+<!-- Training info modal -->
+<div id="trainingModal" class="fixed inset-0 z-50 hidden modal-backdrop p-4 items-center justify-center">
+ <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl p-7">
+  <button onclick="closeModal('trainingModal')" class="float-right text-slate-400 text-xl"><i class="fa-solid fa-xmark"></i></button>
+  <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center"><i class="fa-solid fa-graduation-cap"></i></div>
+  <h3 class="text-2xl font-extrabold mt-4" data-i18n="skillTitle">Job Ready Skills Program</h3>
+  <p class="text-sm text-slate-600 mt-2" data-i18n="trainingDetail">Training information can be connected to your real course, registration form and payment gateway.</p>
+  <button onclick="closeModal('trainingModal')" class="w-full mt-6 py-3 bg-slate-900 text-white rounded-xl font-bold" data-i18n="close">Close</button>
+ </div>
+</div>
+
+<div id="toast" class="fixed bottom-5 right-5 z-[60] translate-y-20 opacity-0 transition-all bg-slate-900 text-white px-5 py-3 rounded-xl shadow-2xl text-sm font-semibold"></div>
+
+<script>
+const states=[
+"All States / UT","Andhra Pradesh","Arunachal Pradesh","Assam","Bihar","Chhattisgarh","Goa","Gujarat","Haryana","Himachal Pradesh","Jharkhand","Karnataka","Kerala","Madhya Pradesh","Maharashtra","Manipur","Meghalaya","Mizoram","Nagaland","Odisha","Punjab","Rajasthan","Sikkim","Tamil Nadu","Telangana","Tripura","Uttar Pradesh","Uttarakhand","West Bengal","Andaman & Nicobar Islands","Chandigarh","Dadra & Nagar Haveli and Daman & Diu","Delhi","Jammu & Kashmir","Ladakh","Lakshadweep","Puducherry"
+];
+const cities={
+"Delhi":["All Cities","New Delhi","Delhi NCR"],
+"Maharashtra":["All Cities","Mumbai","Pune","Nagpur","Nashik","Thane"],
+"Karnataka":["All Cities","Bengaluru","Mysuru","Mangaluru"],
+"Telangana":["All Cities","Hyderabad","Warangal"],
+"Tamil Nadu":["All Cities","Chennai","Coimbatore","Madurai"],
+"West Bengal":["All Cities","Kolkata","Siliguri"],
+"Gujarat":["All Cities","Ahmedabad","Surat","Vadodara"],
+"Uttar Pradesh":["All Cities","Lucknow","Noida","Kanpur","Varanasi","Agra"],
+"Rajasthan":["All Cities","Jaipur","Jodhpur","Udaipur"],
+"Kerala":["All Cities","Kochi","Thiruvananthapuram","Kozhikode"],
+"All States / UT":["All Cities"]
+};
+const categories=["All Categories","IT & Software","Customer Support","Data Entry","Sales & Marketing","HR & Operations","Finance & Accounts","Healthcare","Education","Delivery & Logistics","Design & Creative","Work From Home"];
+const jobs=[
+{id:1,title:"Customer Support Executive",company:"Bharat Digital Services",state:"Delhi",city:"New Delhi",cat:"Customer Support",mode:"Work From Home",salary:"₹22,000–₹35,000 / month",type:"Full-time",posted:"Today"},
+{id:2,title:"Frontend Developer",company:"TechNova India",state:"Karnataka",city:"Bengaluru",cat:"IT & Software",mode:"Hybrid",salary:"₹6–12 LPA",type:"Full-time",posted:"2 hrs ago"},
+{id:3,title:"Data Entry Associate",company:"CloudWork Solutions",state:"Maharashtra",city:"Pune",cat:"Data Entry",mode:"Work From Home",salary:"₹18,000–₹28,000 / month",type:"Full-time",posted:"Today"},
+{id:4,title:"Sales Executive",company:"GrowthKart",state:"Gujarat",city:"Ahmedabad",cat:"Sales & Marketing",mode:"On-site",salary:"₹20,000–₹40,000 / month",type:"Full-time",posted:"1 day ago"},
+{id:5,title:"HR Operations Coordinator",company:"TalentBridge India",state:"Telangana",city:"Hyderabad",cat:"HR & Operations",mode:"Hybrid",salary:"₹4–7 LPA",type:"Full-time",posted:"1 day ago"},
+{id:6,title:"Online Tutor",company:"LearnSphere",state:"Tamil Nadu",city:"Chennai",cat:"Education",mode:"Work From Home",salary:"₹25,000–₹45,000 / month",type:"Part-time",posted:"3 hrs ago"},
+{id:7,title:"Accounts Executive",company:"FinServe Group",state:"Rajasthan",city:"Jaipur",cat:"Finance & Accounts",mode:"On-site",salary:"₹25,000–₹42,000 / month",type:"Full-time",posted:"2 days ago"},
+{id:8,title:"Graphic Designer",company:"CreativeMint",state:"West Bengal",city:"Kolkata",cat:"Design & Creative",mode:"Remote",salary:"₹30,000–₹55,000 / month",type:"Full-time",posted:"5 hrs ago"},
+{id:9,title:"Remote Operations Associate",company:"IndiaWorks",state:"Kerala",city:"Kochi",cat:"Work From Home",mode:"Work From Home",salary:"₹24,000–₹38,000 / month",type:"Full-time",posted:"Today"}
+];
+
+const langs=[
+["en","English"],["hi","हिन्दी"],["bn","বাংলা"],["te","తెలుగు"],["mr","मराठी"],["ta","தமிழ்"],["gu","ગુજરાતી"],["ur","اردو"],["kn","ಕನ್ನಡ"],["or","ଓଡ଼ିଆ"],["ml","മലയാളം"],["pa","ਪੰਜਾਬੀ"],["as","অসমীয়া"],["mai","मैथिली"],["sa","संस्कृतम्"],["ks","کٲشُر"],["ne","नेपाली"],["kok","कोंकणी"],["sd","سنڌي"],["doi","डोगरी"],["mni","ꯃꯤꯇꯩ ꯂꯣꯟ"],["sat","ᱥᱟᱱᱛᱟᱲᱤ"]
+];
+
+const T={
+en:{browse:"Browse Jobs",states:"States & Cities",training:"Training",employers:"For Employers",postJob:"Post a Job",verified:"Pan-India job discovery",heroTitle:"Find Jobs Across India in Your Language",heroText:"Search jobs by role, state, city and work mode. Switch the interface across 22 scheduled Indian languages.",search:"Job title, skill or company",popular:"Popular:",statesCount:"States & UTs",languages:"Indian languages",access:"Job search access",mobile:"Mobile friendly",latest:"Latest Jobs",reset:"Reset filters",noJobs:"No matching jobs",tryAgain:"Try another role, state or city.",explore:"Explore Jobs by State / UT",exploreText:"Quickly browse opportunities across India.",skillTitle:"Job Ready Skills Program",skillText:"Learn resume basics, interview preparation, digital workplace tools and job-search skills.",learn:"View Training",forSeekers:"For Job Seekers",forEmployers:"For Employers",support:"Support",footerText:"A multilingual job discovery platform for opportunities across India.",disclaimer:"Demo portal: listings are sample data. Connect a secure backend, employer verification and payment gateway before production use.",postTitle:"Post a Job",postText:"Publish a vacancy for candidates across India.",publish:"Publish Job",trainingDetail:"Connect this section to your real course, registration system and secure payment gateway.",close:"Close"},
+hi:{browse:"नौकरियां देखें",states:"राज्य और शहर",training:"ट्रेनिंग",employers:"नियोक्ताओं के लिए",postJob:"जॉब पोस्ट करें",verified:"पूरे भारत में जॉब खोज",heroTitle:"अपनी भाषा में पूरे भारत में नौकरी खोजें",heroText:"रोल, राज्य, शहर और काम के तरीके के अनुसार नौकरी खोजें।",search:"जॉब, स्किल या कंपनी",popular:"लोकप्रिय:",statesCount:"राज्य और केंद्र शासित प्रदेश",languages:"भारतीय भाषाएं",access:"24×7 जॉब सर्च",mobile:"मोबाइल फ्रेंडली",latest:"नवीनतम नौकरियां",reset:"फिल्टर रीसेट",noJobs:"कोई मैचिंग जॉब नहीं",tryAgain:"दूसरा रोल, राज्य या शहर चुनें।",explore:"राज्य / केंद्र शासित प्रदेश से जॉब खोजें",exploreText:"पूरे भारत की नौकरियां जल्दी देखें।",skillTitle:"जॉब रेडी स्किल्स प्रोग्राम",skillText:"रिज्यूमे, इंटरव्यू, डिजिटल टूल्स और जॉब सर्च स्किल सीखें।",learn:"ट्रेनिंग देखें",forSeekers:"जॉब सीकर",forEmployers:"नियोक्ता",support:"सहायता",footerText:"पूरे भारत के अवसरों के लिए बहुभाषी जॉब प्लेटफॉर्म।",disclaimer:"डेमो पोर्टल: लिस्टिंग सैंपल डेटा हैं। लाइव करने से पहले सुरक्षित बैकएंड, सत्यापन और पेमेंट गेटवे जोड़ें।",postTitle:"जॉब पोस्ट करें",postText:"पूरे भारत के उम्मीदवारों के लिए वैकेंसी प्रकाशित करें।",publish:"जॉब प्रकाशित करें",trainingDetail:"इस सेक्शन को अपने वास्तविक कोर्स, रजिस्ट्रेशन सिस्टम और सुरक्षित पेमेंट गेटवे से जोड़ें।",close:"बंद करें"},
+bn:{browse:"চাকরি দেখুন",states:"রাজ্য ও শহর",training:"প্রশিক্ষণ",employers:"নিয়োগকর্তাদের জন্য",postJob:"চাকরি পোস্ট করুন",verified:"সারা ভারতে চাকরি অনুসন্ধান",heroTitle:"আপনার ভাষায় সারা ভারতে চাকরি খুঁজুন",heroText:"পদ, রাজ্য, শহর ও কাজের ধরন অনুযায়ী চাকরি খুঁজুন।",search:"চাকরি, দক্ষতা বা কোম্পানি",popular:"জনপ্রিয়:",latest:"সাম্প্রতিক চাকরি",reset:"ফিল্টার রিসেট",noJobs:"কোনো মিল পাওয়া যায়নি",tryAgain:"অন্য পদ, রাজ্য বা শহর চেষ্টা করুন।",explore:"রাজ্য / কেন্দ্রশাসিত অঞ্চল অনুযায়ী চাকরি",skillTitle:"চাকরির দক্ষতা প্রোগ্রাম",learn:"প্রশিক্ষণ দেখুন"},
+te:{browse:"ఉద్యోగాలు చూడండి",states:"రాష్ట్రాలు & నగరాలు",training:"శిక్షణ",employers:"నియామకదారుల కోసం",postJob:"ఉద్యోగం పోస్ట్ చేయండి",heroTitle:"మీ భాషలో భారతదేశం అంతటా ఉద్యోగాలు కనుగొనండి",heroText:"పాత్ర, రాష్ట్రం, నగరం మరియు పని విధానం ఆధారంగా ఉద్యోగాలను శోధించండి.",search:"ఉద్యోగం, నైపుణ్యం లేదా కంపెనీ",popular:"ప్రాచుర్యం:",latest:"తాజా ఉద్యోగాలు",reset:"ఫిల్టర్లను రీసెట్ చేయండి",noJobs:"సరిపోలే ఉద్యోగాలు లేవు",tryAgain:"మరో పాత్ర, రాష్ట్రం లేదా నగరాన్ని ప్రయత్నించండి.",explore:"రాష్ట్రం / కేంద్రపాలిత ప్రాంతం ద్వారా ఉద్యోగాలు",skillTitle:"ఉద్యోగ నైపుణ్యాల ప్రోగ్రామ్",learn:"శిక్షణ చూడండి"},
+ta:{browse:"வேலைகளைப் பார்க்கவும்",states:"மாநிலங்கள் & நகரங்கள்",training:"பயிற்சி",employers:"முதலாளிகளுக்கு",postJob:"வேலை இடுகையிடவும்",heroTitle:"உங்கள் மொழியில் இந்தியா முழுவதும் வேலை தேடுங்கள்",heroText:"பதவி, மாநிலம், நகரம் மற்றும் வேலை முறையின் அடிப்படையில் தேடுங்கள்.",search:"வேலை, திறன் அல்லது நிறுவனம்",popular:"பிரபலமானவை:",latest:"சமீபத்திய வேலைகள்",reset:"வடிகட்டிகளை மீட்டமை",noJobs:"பொருந்தும் வேலை இல்லை",tryAgain:"வேறு பதவி, மாநிலம் அல்லது நகரத்தை முயற்சிக்கவும்.",explore:"மாநிலம் / யூனியன் பிரதேசம் மூலம் வேலை",skillTitle:"வேலைத் திறன் திட்டம்",learn:"பயிற்சியைப் பார்க்கவும்"},
+mr:{browse:"नोकऱ्या पहा",states:"राज्ये आणि शहरे",training:"प्रशिक्षण",employers:"नियोक्त्यांसाठी",postJob:"नोकरी पोस्ट करा",heroTitle:"तुमच्या भाषेत संपूर्ण भारतात नोकरी शोधा",heroText:"भूमिका, राज्य, शहर आणि कामाच्या पद्धतीनुसार नोकऱ्या शोधा.",search:"नोकरी, कौशल्य किंवा कंपनी",popular:"लोकप्रिय:",latest:"नवीन नोकऱ्या",reset:"फिल्टर रीसेट",noJobs:"जुळणाऱ्या नोकऱ्या नाहीत",tryAgain:"दुसरी भूमिका, राज्य किंवा शहर वापरा.",explore:"राज्य / केंद्रशासित प्रदेशानुसार नोकऱ्या",skillTitle:"जॉब रेडी स्किल्स प्रोग्राम",learn:"प्रशिक्षण पहा"},
+gu:{browse:"નોકરીઓ જુઓ",states:"રાજ્યો અને શહેરો",training:"તાલીમ",employers:"નિયોક્તાઓ માટે",postJob:"નોકરી પોસ્ટ કરો",heroTitle:"તમારી ભાષામાં સમગ્ર ભારતમાં નોકરી શોધો",heroText:"રોલ, રાજ્ય, શહેર અને કામના પ્રકાર અનુસાર નોકરી શોધો.",search:"નોકરી, કૌશલ્ય અથવા કંપની",popular:"લોકપ્રિય:",latest:"નવી નોકરીઓ",reset:"ફિલ્ટર રીસેટ",noJobs:"મેચિંગ નોકરી મળી નથી",tryAgain:"બીજો રોલ, રાજ્ય અથવા શહેર અજમાવો.",explore:"રાજ્ય / કેન્દ્રશાસિત પ્રદેશ પ્રમાણે નોકરી",skillTitle:"જોબ રેડી સ્કિલ્સ પ્રોગ્રામ",learn:"તાલીમ જુઓ"},
+kn:{browse:"ಉದ್ಯೋಗಗಳನ್ನು ನೋಡಿ",states:"ರಾಜ್ಯಗಳು ಮತ್ತು ನಗರಗಳು",training:"ತರಬೇತಿ",employers:"ಉದ್ಯೋಗದಾತರಿಗೆ",postJob:"ಉದ್ಯೋಗ ಪೋಸ್ಟ್ ಮಾಡಿ",heroTitle:"ನಿಮ್ಮ ಭಾಷೆಯಲ್ಲಿ ಭಾರತದಾದ್ಯಂತ ಉದ್ಯೋಗ ಹುಡುಕಿ",heroText:"ಪಾತ್ರ, ರಾಜ್ಯ, ನಗರ ಮತ್ತು ಕೆಲಸದ ವಿಧಾನದಿಂದ ಉದ್ಯೋಗ ಹುಡುಕಿ.",search:"ಉದ್ಯೋಗ, ಕೌಶಲ್ಯ ಅಥವಾ ಕಂಪನಿ",popular:"ಜನಪ್ರಿಯ:",latest:"ಇತ್ತೀಚಿನ ಉದ್ಯೋಗಗಳು",reset:"ಫಿಲ್ಟರ್ ಮರುಹೊಂದಿಸಿ",noJobs:"ಹೊಂದಾಣಿಕೆಯ ಉದ್ಯೋಗಗಳಿಲ್ಲ",tryAgain:"ಬೇರೆ ಪಾತ್ರ, ರಾಜ್ಯ ಅಥವಾ ನಗರ ಪ್ರಯತ್ನಿಸಿ.",explore:"ರಾಜ್ಯ / ಕೇಂದ್ರಾಡಳಿತ ಪ್ರದೇಶದ ಮೂಲಕ ಉದ್ಯೋಗ",skillTitle:"ಜಾಬ್ ರೆಡಿ ಸ್ಕಿಲ್ಸ್ ಪ್ರೋಗ್ರಾಂ",learn:"ತರಬೇತಿ ನೋಡಿ"},
+ml:{browse:"ജോലികൾ കാണുക",states:"സംസ്ഥാനങ്ങളും നഗരങ്ങളും",training:"പരിശീലനം",employers:"തൊഴിലുടമകൾക്ക്",postJob:"ജോലി പോസ്റ്റ് ചെയ്യുക",heroTitle:"നിങ്ങളുടെ ഭാഷയിൽ ഇന്ത്യയിലുടനീളം ജോലി കണ്ടെത്തൂ",heroText:"പദവി, സംസ്ഥാനം, നഗരം, ജോലി രീതിയനുസരിച്ച് തിരയുക.",search:"ജോലി, കഴിവ് അല്ലെങ്കിൽ കമ്പനി",popular:"ജനപ്രിയം:",latest:"പുതിയ ജോലികൾ",reset:"ഫിൽട്ടറുകൾ റീസെറ്റ്",noJobs:"പൊരുത്തമുള്ള ജോലികളില്ല",tryAgain:"മറ്റൊരു പദവി, സംസ്ഥാനം അല്ലെങ്കിൽ നഗരം ശ്രമിക്കുക.",explore:"സംസ്ഥാനം / കേന്ദ്രഭരണ പ്രദേശം വഴി ജോലി",skillTitle:"ജോബ് റെഡി സ്കിൽസ് പ്രോഗ്രാം",learn:"പരിശീലനം കാണുക"},
+pa:{browse:"ਨੌਕਰੀਆਂ ਵੇਖੋ",states:"ਰਾਜ ਅਤੇ ਸ਼ਹਿਰ",training:"ਟ੍ਰੇਨਿੰਗ",employers:"ਨਿਯੋਗਦਾਤਿਆਂ ਲਈ",postJob:"ਨੌਕਰੀ ਪੋਸਟ ਕਰੋ",heroTitle:"ਆਪਣੀ ਭਾਸ਼ਾ ਵਿੱਚ ਪੂਰੇ ਭਾਰਤ ਵਿੱਚ ਨੌਕਰੀ ਲੱਭੋ",heroText:"ਭੂਮਿਕਾ, ਰਾਜ, ਸ਼ਹਿਰ ਅਤੇ ਕੰਮ ਦੇ ਢੰਗ ਅਨੁਸਾਰ ਨੌਕਰੀ ਲੱਭੋ।",search:"ਨੌਕਰੀ, ਹੁਨਰ ਜਾਂ ਕੰਪਨੀ",popular:"ਪ੍ਰਸਿੱਧ:",latest:"ਨਵੀਆਂ ਨੌਕਰੀਆਂ",reset:"ਫਿਲਟਰ ਰੀਸੈੱਟ",noJobs:"ਕੋਈ ਮੇਲ ਖਾਂਦੀ ਨੌਕਰੀ ਨਹੀਂ",tryAgain:"ਹੋਰ ਭੂਮਿਕਾ, ਰਾਜ ਜਾਂ ਸ਼ਹਿਰ ਅਜ਼ਮਾਓ।",explore:"ਰਾਜ / ਕੇਂਦਰ ਸ਼ਾਸਿਤ ਪ੍ਰਦੇਸ਼ ਅਨੁਸਾਰ ਨੌਕਰੀ",skillTitle:"ਜੌਬ ਰੈਡੀ ਸਕਿਲਜ਼ ਪ੍ਰੋਗਰਾਮ",learn:"ਟ੍ਰੇਨਿੰਗ ਵੇਖੋ"}
+};
+
+let lang=localStorage.getItem("bj_lang")||"en";
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+function fillSelects(){
+ const sf=document.getElementById("stateFilter"), cf=document.getElementById("cityFilter"), cat=document.getElementById("categoryFilter"), ns=document.getElementById("newState"), nc=document.getElementById("newCategory");
+ sf.innerHTML=states.map(x=>`<option>${x}</option>`).join(""); ns.innerHTML=states.slice(1).map(x=>`<option>${x}</option>`).join("");
+ cat.innerHTML=categories.map(x=>`<option>${x}</option>`).join(""); nc.innerHTML=categories.slice(1).map(x=>`<option>${x}</option>`).join("");
+ updateCities(); renderStates();
+}
+function updateCities(){
+ const state=document.getElementById("stateFilter").value;
+ const list=cities[state]||["All Cities"];
+ document.getElementById("cityFilter").innerHTML=list.map(x=>`<option>${x}</option>`).join("");
+}
+function renderStates(){
+ document.getElementById("stateChips").innerHTML=states.slice(1).map(s=>`<button onclick="chooseState('${esc(s)}')" class="px-3 py-2 rounded-lg bg-slate-100 hover:bg-blue-50 hover:text-blue-700 text-xs font-semibold">${esc(s)}</button>`).join("");
+}
+function chooseState(s){document.getElementById("stateFilter").value=s;updateCities();filterJobs();document.getElementById("jobs").scrollIntoView({behavior:"smooth"})}
+function quickSearch(v){document.getElementById("searchInput").value=v;filterJobs();document.getElementById("jobs").scrollIntoView({behavior:"smooth"})}
+function filterJobs(){
+ const q=document.getElementById("searchInput").value.toLowerCase().trim(), s=document.getElementById("stateFilter").value, c=document.getElementById("cityFilter").value, cat=document.getElementById("categoryFilter").value;
+ const out=jobs.filter(j=>(!q||`${j.title} ${j.company} ${j.cat} ${j.mode}`.toLowerCase().includes(q))&&(!s||s==="All States / UT"||j.state===s)&&(!c||c==="All Cities"||j.city===c)&&(!cat||cat==="All Categories"||j.cat===cat||j.mode===cat));
+ renderJobs(out);
+}
+function renderJobs(list){
+ document.getElementById("jobCount").textContent=`${list.length} ${list.length===1?"job":"jobs"} found`;
+ const grid=document.getElementById("jobGrid"), empty=document.getElementById("empty"); grid.innerHTML="";
+ if(!list.length){grid.classList.add("hidden");empty.classList.remove("hidden");return} grid.classList.remove("hidden");empty.classList.add("hidden");
+ list.forEach(j=>{
+  const initials=j.company.split(" ").map(x=>x[0]).slice(0,2).join("");
+  grid.insertAdjacentHTML("beforeend",`<article class="card bg-white border border-slate-200 rounded-2xl p-5 shadow-sm flex flex-col justify-between">
+   <div><div class="flex justify-between gap-3"><div class="w-11 h-11 rounded-xl bg-blue-600 text-white flex items-center justify-center font-extrabold">${esc(initials)}</div><span class="px-2.5 py-1 h-fit rounded-full bg-slate-100 text-slate-600 text-[11px] font-bold">${esc(j.posted)}</span></div>
+   <div class="mt-4 text-xs font-semibold text-slate-500">${esc(j.company)}</div><h3 class="text-lg font-extrabold text-slate-900 mt-1">${esc(j.title)}</h3>
+   <div class="flex flex-wrap gap-2 mt-3"><span class="tag bg-blue-50 text-blue-700">${esc(j.cat)}</span><span class="tag bg-emerald-50 text-emerald-700">${esc(j.mode)}</span><span class="tag bg-slate-100 text-slate-600">${esc(j.type)}</span></div>
+   <div class="mt-4 text-sm text-slate-500"><i class="fa-solid fa-location-dot mr-2"></i>${esc(j.city)}, ${esc(j.state)}</div></div>
+   <div class="mt-5 pt-4 border-t border-slate-100 flex items-end justify-between gap-3"><div><div class="text-[11px] text-slate-400">Salary</div><div class="font-extrabold text-slate-900 text-sm">${esc(j.salary)}</div></div><button onclick="applyJob(${j.id})" class="px-4 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold">Apply</button></div>
+  </article>`);
+ });
+}
+function applyJob(id){const j=jobs.find(x=>x.id===id);document.getElementById("applyTitle").textContent=j.title;document.getElementById("applyCompany").textContent=j.company;openModal("applyModal")}
+function resetFilters(){document.getElementById("searchInput").value="";document.getElementById("stateFilter").value="All States / UT";updateCities();document.getElementById("categoryFilter").value="All Categories";renderJobs(jobs)}
+function openModal(id){const el=document.getElementById(id);el.classList.remove("hidden");el.classList.add("flex");document.body.classList.add("overflow-hidden")}
+function closeModal(id){const el=document.getElementById(id);el.classList.add("hidden");el.classList.remove("flex");document.body.classList.remove("overflow-hidden")}
+function submitApply(e){e.preventDefault();closeModal("applyModal");toast("Application submitted (demo). Connect your backend to process it.")}
+function submitJob(e){e.preventDefault();const j={id:Date.now(),title:document.getElementById("newTitle").value,company:document.getElementById("newCompany").value,state:document.getElementById("newState").value,city:document.getElementById("newCity").value||"India",cat:document.getElementById("newCategory").value,mode:"Work From Home",salary:document.getElementById("newSalary").value||"Salary as per company",type:"Full-time",posted:"Just now"};jobs.unshift(j);renderJobs(jobs);closeModal("postJobModal");e.target.reset();toast("Job published in demo mode.")}
+function toast(msg){const t=document.getElementById("toast");t.textContent=msg;t.classList.remove("translate-y-20","opacity-0");setTimeout(()=>t.classList.add("translate-y-20","opacity-0"),3200)}
+function toggleLang(){document.getElementById("langMenu").classList.toggle("hidden")}
+function renderLanguages(){
+ document.getElementById("languageList").innerHTML=langs.map(([code,name])=>`<button onclick="setLang('${code}')" class="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-100 text-sm flex justify-between"><span>${name}</span><span class="text-[10px] text-slate-400">${code.toUpperCase()}</span></button>`).join("");
+}
+function setLang(code){lang=code;localStorage.setItem("bj_lang",code);document.getElementById("langMenu").classList.add("hidden");document.getElementById("currentLang").textContent=langs.find(x=>x[0]===code)?.[1]||"English";applyTranslations()}
+function applyTranslations(){
+ const tr=T[lang]||T.en;
+ document.querySelectorAll("[data-i18n]").forEach(el=>{const k=el.dataset.i18n;if(tr[k])el.textContent=tr[k]});
+ document.querySelectorAll("[data-i18n-placeholder]").forEach(el=>{const k=el.dataset.i18nPlaceholder;if(tr[k])el.placeholder=tr[k]});
+ document.documentElement.lang=lang;
+}
+document.addEventListener("DOMContentLoaded",()=>{fillSelects();renderLanguages();document.getElementById("currentLang").textContent=langs.find(x=>x[0]===lang)?.[1]||"English";applyTranslations();renderJobs(jobs);
+ document.getElementById("searchInput").addEventListener("input",filterJobs);document.getElementById("stateFilter").addEventListener("change",()=>{updateCities();filterJobs()});document.getElementById("cityFilter").addEventListener("change",filterJobs);document.getElementById("categoryFilter").addEventListener("change",filterJobs);
+});
+</script>
+<style>
+.quick{padding:.4rem .65rem;border:1px solid #334155;background:#0f172a;border-radius:.5rem;color:#cbd5e1}.quick:hover{background:#1e293b;color:white}.tag{padding:.3rem .55rem;border-radius:.45rem;font-size:.7rem;font-weight:600}.field{width:100%;padding:.75rem .9rem;border:1px solid #cbd5e1;border-radius:.65rem;background:#f8fafc;font-size:.875rem;outline:none}.field:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.08)}
+</style>
+</body>
+</html>
